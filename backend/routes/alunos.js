@@ -17,7 +17,7 @@ router.post('/', async (req, res) => {
     const aluno = new Aluno({
         nome: req.body.nome,
         escola: req.body.escola,
-        sala: req.body.sala,
+        turma: req.body.turma,
         statusPagamento: req.body.statusPagamento,
         telefone: req.body.telefone,
         email: req.body.email
