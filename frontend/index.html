@@ -13,9 +13,53 @@
         <section class="blog">
             <h2>Últimas Notícias</h2>
             <p>Fique por dentro das novidades do mundo dos esportes!</p>
+            <button class="btn btn-primary d-none" id="create-post-btn" data-toggle="modal" data-target="#createPostModal">Criar Post</button>
         </section>
     </main>
     <div id="footer"></div>
+
+    <!-- Modal para criar post -->
+    <div class="modal fade" id="createPostModal" tabindex="-1" aria-labelledby="createPostModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createPostModalLabel">Criar Post</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="create-post-form">
+                        <div class="form-group">
+                            <label for="post-title">Título</label>
+                            <input type="text" class="form-control" id="post-title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="post-text">Texto</label>
+                            <textarea class="form-control" id="post-text" rows="3" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="post-image">Imagem</label>
+                            <input type="file" class="form-control-file" id="post-image">
+                        </div>
+                        <div class="form-group">
+                            <label for="post-video">Vídeo</label>
+                            <input type="file" class="form-control-file" id="post-video">
+                        </div>
+                        <div class="form-group">
+                            <label for="post-files">Outros Arquivos</label>
+                            <input type="file" class="form-control-file" id="post-files" multiple>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Postar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="js/main.js"></script>
     <script>
         fetch('header.html').then(response => response.text()).then(data => document.getElementById("header").innerHTML = data);

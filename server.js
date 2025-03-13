@@ -4,6 +4,7 @@ const cors = require('cors');
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const multer = require('multer');
 
 require('dotenv').config();
 
@@ -32,6 +33,17 @@ const authMiddleware = (req, res, next) => {
     }
 };
 
+// Configuração do multer para upload de arquivos
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}-${file.originalname}`);
+    }
+});
+const upload = multer({ storage });
+
 // Rotas
 const alunosRoutes = require('./backend/routes/alunos');
 app.use('/api/alunos', authMiddleware, alunosRoutes);
@@ -46,6 +58,20 @@ app.post('/api/login', async (req, res) => {
         return res.send({ token });
     }
     res.status(401).send({ error: 'Credenciais inválidas' });
+});
+
+// Rota para criar post
+app.post('/api/posts', authMiddleware, upload.fields([{ name: 'image' }, { name: 'video' }, { name: 'files' }]), (req, res) => {
+    const { title, text } = req.body;
+    const image = req.files['image'] ? req.files['image'][0].path : null;
+    const video = req.files['video'] ? req.files['video'][0].path : null;
+    const files = req.files['files'] ? req.files['files'].map(file => file.path) : [];
+
+    // Salvar post no banco de dados (exemplo simples)
+    // Substitua pela lógica real de salvar no banco de dados
+    const post = { title, text, image, video, files };
+    console.log('Post criado:', post);
+    res.status(201).send({ message: 'Post criado com sucesso', post });
 });
 
 // Servir frontend estático

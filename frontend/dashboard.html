@@ -11,20 +11,49 @@
     <div id="header"></div>
     <main class="container mt-5">
         <h2>Gestão de Alunos</h2>
-        <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#createAlunoModal">Criar Aluno</button>
-        <table class="table table-striped">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Nome</th>
-                    <th>Escola</th>
-                    <th>Sala</th>
-                    <th>Status de Pagamento</th>
-                </tr>
-            </thead>
-            <tbody id="tabela-alunos">
-                <!-- Dados dos alunos serão carregados aqui -->
-            </tbody>
-        </table>
+        <div class="mb-3">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#createAlunoModal">Criar Aluno</button>
+            <button class="btn btn-warning" onclick="verPagamentosNaoConcluidos()">Ver Pagamentos Não Concluídos</button>
+            <button class="btn btn-info" onclick="verTodosAlunos()">Ver Todos os Alunos</button>
+            <button class="btn btn-success" onclick="exportToExcel()">Exportar para Excel</button>
+            <button class="btn btn-secondary" onclick="filtrar()">Filtrar</button>
+        </div>
+        <div class="filter-container">
+            <label for="filtro-escola">Escola:</label>
+            <select id="filtro-escola" class="form-control">
+                <option value="">Todas</option>
+            </select>
+            <label for="filtro-sala">Sala:</label>
+            <select id="filtro-sala" class="form-control">
+                <option value="">Todas</option>
+            </select>
+            <label for="filtro-pagamento">Pagamento:</label>
+            <select id="filtro-pagamento" class="form-control">
+                <option value="">Todos</option>
+                <option value="pago">Pago</option>
+                <option value="nao-pago">Não Pago</option>
+            </select>
+            <button class="btn btn-secondary" onclick="filtrar()">Filtrar</button>
+        </div>
+        <canvas id="alunosChart" width="400" height="200"></canvas>
+        <div class="table-container">
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Nome</th>
+                        <th>Escola</th>
+                        <th>Sala</th>
+                        <th>Telefone</th>
+                        <th>Email</th>
+                        <th>Status de Pagamento</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-alunos">
+                    <!-- Dados dos alunos serão carregados aqui -->
+                </tbody>
+            </table>
+        </div>
     </main>
     <div id="footer"></div>
 
@@ -46,17 +75,103 @@
                         </div>
                         <div class="form-group">
                             <label for="escola">Escola</label>
-                            <input type="text" class="form-control" id="escola" required>
+                            <select class="form-control" id="escola" required>
+                                <option value="Escola-1">Escola-1</option>
+                                <option value="Escola-2">Escola-2</option>
+                                <option value="Escola-3">Escola-3</option>
+                                <option value="Escola-4">Escola-4</option>
+                                <option value="Escola-5">Escola-5</option>
+                            </select>
                         </div>
                         <div class="form-group">
-                            <label for="sala">Sala</label>
-                            <input type="text" class="form-control" id="sala" required>
+                            <label for="turma">Turma</label>
+                            <select class="form-control" id="turma" required>
+                                <option value="1º Ano do Fundamental 1">1º Ano do Fundamental 1</option>
+                                <option value="2º Ano do Fundamental 1">2º Ano do Fundamental 1</option>
+                                <option value="3º Ano do Fundamental 1">3º Ano do Fundamental 1</option>
+                                <option value="4º Ano do Fundamental 1">4º Ano do Fundamental 1</option>
+                                <option value="5º Ano do Fundamental 1">5º Ano do Fundamental 1</option>
+                                <option value="6º Ano do Fundamental 2">6º Ano do Fundamental 2</option>
+                                <option value="7º Ano do Fundamental 2">7º Ano do Fundamental 2</option>
+                                <option value="8º Ano do Fundamental 2">8º Ano do Fundamental 2</option>
+                                <option value="9º Ano do Fundamental 2">9º Ano do Fundamental 2</option>
+                                <option value="1º Série do Ensino Médio">1º Série do Ensino Médio</option>
+                                <option value="2º Série do Ensino Médio">2º Série do Ensino Médio</option>
+                                <option value="3º Série do Ensino Médio">3º Série do Ensino Médio</option>
+                                <option value="Não estuda em uma rede Maximus">Não estuda em uma rede Maximus</option>
+                                <option value="Ensino Médio já concluído">Ensino Médio já concluído</option>
+                            </select>
                         </div>
                         <div class="form-group">
-                            <label for="statusPagamento">Status de Pagamento</label>
-                            <input type="text" class="form-control" id="statusPagamento" required>
+                            <label for="telefone">Telefone</label>
+                            <input type="text" class="form-control" id="telefone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Criar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar aluno -->
+    <div class="modal fade" id="editAlunoModal" tabindex="-1" aria-labelledby="editAlunoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editAlunoModalLabel">Editar Aluno</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-aluno-form">
+                        <input type="hidden" id="edit-id">
+                        <div class="form-group">
+                            <label for="edit-nome">Nome</label>
+                            <input type="text" class="form-control" id="edit-nome" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-escola">Escola</label>
+                            <select class="form-control" id="edit-escola" required>
+                                <option value="Escola-1">Escola-1</option>
+                                <option value="Escola-2">Escola-2</option>
+                                <option value="Escola-3">Escola-3</option>
+                                <option value="Escola-4">Escola-4</option>
+                                <option value="Escola-5">Escola-5</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-turma">Turma</label>
+                            <select class="form-control" id="edit-turma" required>
+                                <option value="1º Ano do Fundamental 1">1º Ano do Fundamental 1</option>
+                                <option value="2º Ano do Fundamental 1">2º Ano do Fundamental 1</option>
+                                <option value="3º Ano do Fundamental 1">3º Ano do Fundamental 1</option>
+                                <option value="4º Ano do Fundamental 1">4º Ano do Fundamental 1</option>
+                                <option value="5º Ano do Fundamental 1">5º Ano do Fundamental 1</option>
+                                <option value="6º Ano do Fundamental 2">6º Ano do Fundamental 2</option>
+                                <option value="7º Ano do Fundamental 2">7º Ano do Fundamental 2</option>
+                                <option value="8º Ano do Fundamental 2">8º Ano do Fundamental 2</option>
+                                <option value="9º Ano do Fundamental 2">9º Ano do Fundamental 2</option>
+                                <option value="1º Série do Ensino Médio">1º Série do Ensino Médio</option>
+                                <option value="2º Série do Ensino Médio">2º Série do Ensino Médio</option>
+                                <option value="3º Série do Ensino Médio">3º Série do Ensino Médio</option>
+                                <option value="Não estuda em uma rede Maximus">Não estuda em uma rede Maximus</option>
+                                <option value="Ensino Médio já concluído">Ensino Médio já concluído</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-telefone">Telefone</label>
+                            <input type="text" class="form-control" id="edit-telefone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-email">Email</label>
+                            <input type="email" class="form-control" id="edit-email" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
                     </form>
                 </div>
             </div>
@@ -66,6 +181,8 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="js/dashboard.js"></script>
     <script>
         fetch('header.html').then(response => response.text()).then(data => document.getElementById("header").innerHTML = data);

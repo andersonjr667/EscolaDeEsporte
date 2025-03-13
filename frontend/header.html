@@ -1,8 +1,9 @@
 <header class="bg-primary text-white p-3">
     <div class="container d-flex justify-content-between align-items-center">
-        <h1>Escola de Esportes</h1>
+        <img src="images/logo.png" alt="Escola de Esportes" height="50">
         <nav id="nav-links">
-            <a href="index.html" class="text-white">Home</a>
+            <a href="index.html" class="text-white">Pagina Inicial</a>
+            <a href="esportes.html" class="text-white ml-3">Esportes</a>
             <button class="btn btn-warning ml-3" id="login-btn">Login</button>
         </nav>
     </div>
@@ -27,7 +28,6 @@
             }
         } else {
             document.getElementById('login-btn').addEventListener('click', () => {
-                // Redirecionar para a página de login
                 window.location.href = 'login.html';
             });
         }
