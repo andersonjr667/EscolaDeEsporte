@@ -8,21 +8,18 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header class="bg-dark text-white p-3">
-        <h1>Escola de Esportes</h1>
-        <nav>
-            <a href="dashboard.html" class="text-white">Dashboard</a>
-        </nav>
-    </header>
+    <div id="header"></div>
     <main class="container mt-5">
         <section class="blog">
             <h2>Últimas Notícias</h2>
             <p>Fique por dentro das novidades do mundo dos esportes!</p>
         </section>
     </main>
-    <footer class="bg-dark text-white text-center p-3 mt-5">
-        <p>&copy; 2025 Escola de Esportes. Todos os direitos reservados.</p>
-    </footer>
+    <div id="footer"></div>
     <script src="js/main.js"></script>
+    <script>
+        fetch('header.html').then(response => response.text()).then(data => document.getElementById("header").innerHTML = data);
+        fetch('footer.html').then(response => response.text()).then(data => document.getElementById("footer").innerHTML = data);
+    </script>
 </body>
 </html>

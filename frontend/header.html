@@ -1,10 +1,35 @@
-<header class="bg-dark text-white p-3">
+<header class="bg-primary text-white p-3">
     <div class="container d-flex justify-content-between align-items-center">
         <h1>Escola de Esportes</h1>
-        <nav>
+        <nav id="nav-links">
             <a href="index.html" class="text-white">Home</a>
-            <a href="dashboard.html" class="text-white ml-3">Dashboard</a>
-            <button class="btn btn-warning ml-3">Login</button>
+            <button class="btn btn-warning ml-3" id="login-btn">Login</button>
         </nav>
     </div>
 </header>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            if (payload.role === 'admin') {
+                const navLinks = document.getElementById('nav-links');
+                const dashboardLink = document.createElement('a');
+                dashboardLink.href = 'dashboard.html';
+                dashboardLink.className = 'text-white ml-3';
+                dashboardLink.innerText = 'Dashboard';
+                navLinks.insertBefore(dashboardLink, document.getElementById('login-btn'));
+                document.getElementById('login-btn').innerText = 'Logout';
+                document.getElementById('login-btn').addEventListener('click', () => {
+                    localStorage.removeItem('token');
+                    location.reload();
+                });
+            }
+        } else {
+            document.getElementById('login-btn').addEventListener('click', () => {
+                // Redirecionar para a página de login
+                window.location.href = 'login.html';
+            });
+        }
+    });
+</script>
